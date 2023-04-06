@@ -1,11 +1,14 @@
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
-using Serilog.Events;
-using Serilog;
 using Microsoft.OpenApi.Models;
 using Saiketsu.Service.Election.Application;
 using Saiketsu.Service.Election.Application.Common;
+using Saiketsu.Service.Election.Domain.IntegrationEvents;
+using Saiketsu.Service.Election.Domain.Options;
+using Saiketsu.Service.Election.Infrastructure;
 using Saiketsu.Service.Election.Infrastructure.Persistence;
+using Serilog;
+using Serilog.Events;
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
@@ -53,7 +56,10 @@ static void AddServices(WebApplicationBuilder builder)
             .UseSnakeCaseNamingConvention();
     });
 
+    builder.Services.Configure<RabbitMQOptions>(builder.Configuration.GetSection(RabbitMQOptions.Position));
+
     builder.Services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
+    builder.Services.AddSingleton<IEventBus, RabbitEventBus>();
 }
 
 static void AddMiddleware(WebApplication app)
@@ -69,6 +75,18 @@ static void AddMiddleware(WebApplication app)
     app.MapControllers();
 }
 
+static void SubscribeEventBus(IHost app)
+{
+    using var scope = app.Services.CreateScope();
+    var eventBus = scope.ServiceProvider.GetRequiredService<IEventBus>();
+
+    eventBus.Subscribe<UserCreatedIntegrationEvent>();
+    eventBus.Subscribe<UserDeletedIntegrationEvent>();
+
+    eventBus.Subscribe<CandidateCreatedIntegrationEvent>();
+    eventBus.Subscribe<CandidateDeletedIntegrationEvent>();
+}
+
 try
 {
     Log.Information("Starting web application");
@@ -81,7 +99,8 @@ try
     var app = builder.Build();
 
     AddMiddleware(app);
-    
+    SubscribeEventBus(app);
+
     app.Run();
 }
 catch (Exception ex)

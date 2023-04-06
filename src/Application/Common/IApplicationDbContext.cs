@@ -1,19 +1,16 @@
-﻿using Saiketsu.Service.Election.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Saiketsu.Service.Election.Domain.Entities;
 
-namespace Saiketsu.Service.Election.Application.Common
+namespace Saiketsu.Service.Election.Application.Common;
+
+public interface IApplicationDbContext
 {
-    public interface IApplicationDbContext
-    {
-        DbSet<ElectionEntity> Elections { get; }
-        DbSet<ElectionUserEntity> ElectionUsers { get; }
-        EntityEntry Entry(object entity);
-        Task<int> SaveChangesAsync(CancellationToken cancellationToken);
-    }
+    DbSet<ElectionEntity> Elections { get; }
+    DbSet<UserEntity> Users { get; }
+    DbSet<CandidateEntity> Candidates { get; }
+    DbSet<ElectionUserEntity> ElectionUsers { get; }
+    DbSet<ElectionCandidateEntity> ElectionCandidates { get; }
+    EntityEntry Entry(object entity);
+    Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }

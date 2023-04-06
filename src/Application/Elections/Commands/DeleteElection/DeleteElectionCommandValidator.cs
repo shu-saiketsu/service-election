@@ -1,17 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FluentValidation;
+﻿using FluentValidation;
 
-namespace Saiketsu.Service.Election.Application.Elections.Commands.DeleteElection
+namespace Saiketsu.Service.Election.Application.Elections.Commands.DeleteElection;
+
+public sealed class DeleteElectionCommandValidator : AbstractValidator<DeleteElectionCommand>
 {
-    public sealed class DeleteElectionCommandValidator : AbstractValidator<DeleteElectionCommand>
-    {
-        public DeleteElectionCommandValidator()
-        {
-            
-        }
-    }
 }
