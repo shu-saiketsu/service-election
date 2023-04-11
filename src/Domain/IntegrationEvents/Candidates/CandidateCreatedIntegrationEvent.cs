@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace Saiketsu.Service.Election.Domain.IntegrationEvents;
+namespace Saiketsu.Service.Election.Domain.IntegrationEvents.Candidates;
 
 public sealed class CandidateCreatedIntegrationEvent : IRequest
 {

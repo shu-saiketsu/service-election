@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace Saiketsu.Service.Election.Domain.IntegrationEvents;
+namespace Saiketsu.Service.Election.Domain.IntegrationEvents.Users;
 
 public sealed class UserDeletedIntegrationEvent : IRequest
 {

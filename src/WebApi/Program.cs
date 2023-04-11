@@ -3,7 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Saiketsu.Service.Election.Application;
 using Saiketsu.Service.Election.Application.Common;
-using Saiketsu.Service.Election.Domain.IntegrationEvents;
+using Saiketsu.Service.Election.Domain.IntegrationEvents.Candidates;
+using Saiketsu.Service.Election.Domain.IntegrationEvents.Users;
 using Saiketsu.Service.Election.Domain.Options;
 using Saiketsu.Service.Election.Infrastructure;
 using Saiketsu.Service.Election.Infrastructure.Persistence;
@@ -18,6 +19,14 @@ Log.Logger = new LoggerConfiguration()
     .Enrich.WithProperty("ServiceName", serviceName)
     .WriteTo.Console()
     .CreateBootstrapLogger();
+
+static void PerformDataMigrations(WebApplication app)
+{
+    using var scope = app.Services.CreateScope();
+    var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+    if (app.Environment.IsDevelopment()) context.Database.Migrate();
+}
 
 static void InjectSerilog(WebApplicationBuilder builder)
 {
@@ -34,7 +43,8 @@ static void AddServices(WebApplicationBuilder builder)
     builder.Services.AddRouting(x => x.LowercaseUrls = true);
     builder.Services.AddControllers();
     builder.Services.AddEndpointsApiExplorer();
-    builder.Services.AddSwaggerGen();
+
+    builder.Services.AddHealthChecks();
 
     builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(IApplicationMarker).Assembly));
     builder.Services.AddValidatorsFromAssemblyContaining<IApplicationMarker>();
@@ -56,7 +66,11 @@ static void AddServices(WebApplicationBuilder builder)
     builder.Services.AddDbContext<ApplicationDbContext>(options =>
     {
         options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"),
-                builder => { builder.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName); })
+                builder =>
+                {
+                    builder.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName);
+                    builder.EnableRetryOnFailure();
+                })
             .UseSnakeCaseNamingConvention();
     });
 
@@ -77,6 +91,7 @@ static void AddMiddleware(WebApplication app)
     }
 
     app.MapControllers();
+    app.MapHealthChecks("/health");
 }
 
 static void SubscribeEventBus(IHost app)
@@ -104,6 +119,7 @@ try
 
     AddMiddleware(app);
     SubscribeEventBus(app);
+    PerformDataMigrations(app);
 
     app.Run();
 }

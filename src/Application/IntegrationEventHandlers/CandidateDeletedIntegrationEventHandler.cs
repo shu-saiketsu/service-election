@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using Saiketsu.Service.Election.Application.Candidates.Commands.DeleteCandidate;
-using Saiketsu.Service.Election.Domain.IntegrationEvents;
+using Saiketsu.Service.Election.Domain.IntegrationEvents.Candidates;
 
 namespace Saiketsu.Service.Election.Application.IntegrationEventHandlers;
 

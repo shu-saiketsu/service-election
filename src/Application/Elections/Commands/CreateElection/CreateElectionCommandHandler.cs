@@ -2,18 +2,22 @@
 using MediatR;
 using Saiketsu.Service.Election.Application.Common;
 using Saiketsu.Service.Election.Domain.Entities;
+using Saiketsu.Service.Election.Domain.IntegrationEvents.Elections;
 
 namespace Saiketsu.Service.Election.Application.Elections.Commands.CreateElection;
 
 public sealed class CreateElectionCommandHandler : IRequestHandler<CreateElectionCommand, ElectionEntity?>
 {
     private readonly IApplicationDbContext _context;
+    private readonly IEventBus _eventBus;
     private readonly IValidator<CreateElectionCommand> _validator;
 
-    public CreateElectionCommandHandler(IApplicationDbContext context, IValidator<CreateElectionCommand> validator)
+    public CreateElectionCommandHandler(IApplicationDbContext context, IValidator<CreateElectionCommand> validator,
+        IEventBus eventBus)
     {
         _context = context;
         _validator = validator;
+        _eventBus = eventBus;
     }
 
     public async Task<ElectionEntity?> Handle(CreateElectionCommand request, CancellationToken cancellationToken)
@@ -44,6 +48,9 @@ public sealed class CreateElectionCommandHandler : IRequestHandler<CreateElectio
         await _context.Entry(election)
             .Reference("Owner")
             .LoadAsync(cancellationToken);
+
+        var @event = new ElectionCreatedIntegrationEvent { Id = election.Id };
+        _eventBus.Publish(@event);
 
         return election;
     }

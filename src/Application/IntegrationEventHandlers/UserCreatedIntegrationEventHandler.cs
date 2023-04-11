@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using Saiketsu.Service.Election.Application.Users.Commands.CreateUser;
-using Saiketsu.Service.Election.Domain.IntegrationEvents;
+using Saiketsu.Service.Election.Domain.IntegrationEvents.Users;
 
 namespace Saiketsu.Service.Election.Application.IntegrationEventHandlers;
 
