@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
@@ -56,6 +57,8 @@ namespace Saiketsu.Service.Election.Infrastructure.Persistence.Migrations
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     name = table.Column<string>(type: "text", nullable: false),
+                    start_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    end_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     type_id = table.Column<int>(type: "integer", nullable: false),
                     owner_id = table.Column<string>(type: "text", nullable: false)
                 },
@@ -69,7 +72,7 @@ namespace Saiketsu.Service.Election.Infrastructure.Persistence.Migrations
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "fk_election_user_entity_owner_id",
+                        name: "fk_election_users_owner_id",
                         column: x => x.owner_id,
                         principalTable: "user",
                         principalColumn: "id",
@@ -118,7 +121,7 @@ namespace Saiketsu.Service.Election.Infrastructure.Persistence.Migrations
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "fk_election_user_user_entity_user_id",
+                        name: "fk_election_user_users_user_id",
                         column: x => x.user_id,
                         principalTable: "user",
                         principalColumn: "id",
@@ -130,7 +133,7 @@ namespace Saiketsu.Service.Election.Infrastructure.Persistence.Migrations
                 columns: new[] { "id", "name" },
                 values: new object[,]
                 {
-                    { 1, "FirstPassTheVote" },
+                    { 1, "FirstPassThePost" },
                     { 2, "Other" }
                 });
 

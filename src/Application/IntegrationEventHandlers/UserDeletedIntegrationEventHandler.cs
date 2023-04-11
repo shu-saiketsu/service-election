@@ -1,25 +1,22 @@
 ﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
-using Saiketsu.Service.Election.Application.Common;
+using Saiketsu.Service.Election.Application.Users.Commands.DeleteUser;
 using Saiketsu.Service.Election.Domain.IntegrationEvents;
 
 namespace Saiketsu.Service.Election.Application.IntegrationEventHandlers;
 
 public sealed class UserDeletedIntegrationEventHandler : IRequestHandler<UserDeletedIntegrationEvent>
 {
-    private readonly IApplicationDbContext _context;
+    private readonly IMediator _mediator;
 
-    public UserDeletedIntegrationEventHandler(IApplicationDbContext context)
+    public UserDeletedIntegrationEventHandler(IMediator mediator)
     {
-        _context = context;
+        _mediator = mediator;
     }
 
     public async Task Handle(UserDeletedIntegrationEvent request, CancellationToken cancellationToken)
     {
-        var user = await _context.Users.SingleOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
-        if (user == null) return;
+        var command = new DeleteUserCommand { UserId = request.Id };
 
-        _context.Users.Remove(user);
-        await _context.SaveChangesAsync(cancellationToken);
+        await _mediator.Send(command, cancellationToken);
     }
 }

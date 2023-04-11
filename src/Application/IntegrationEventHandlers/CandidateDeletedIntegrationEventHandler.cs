@@ -1,25 +1,25 @@
 ﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
-using Saiketsu.Service.Election.Application.Common;
+using Saiketsu.Service.Election.Application.Candidates.Commands.DeleteCandidate;
 using Saiketsu.Service.Election.Domain.IntegrationEvents;
 
 namespace Saiketsu.Service.Election.Application.IntegrationEventHandlers;
 
 public sealed class CandidateDeletedIntegrationEventHandler : IRequestHandler<CandidateDeletedIntegrationEvent>
 {
-    private readonly IApplicationDbContext _context;
+    private readonly IMediator _mediator;
 
-    public CandidateDeletedIntegrationEventHandler(IApplicationDbContext context)
+    public CandidateDeletedIntegrationEventHandler(IMediator mediator)
     {
-        _context = context;
+        _mediator = mediator;
     }
 
     public async Task Handle(CandidateDeletedIntegrationEvent request, CancellationToken cancellationToken)
     {
-        var candidate = await _context.Candidates.SingleOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
-        if (candidate == null) return;
+        var command = new DeleteCandidateCommand
+        {
+            CandidateId = request.Id
+        };
 
-        _context.Candidates.Remove(candidate);
-        await _context.SaveChangesAsync(cancellationToken);
+        await _mediator.Send(command, cancellationToken);
     }
 }

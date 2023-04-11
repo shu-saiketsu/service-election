@@ -6,6 +6,8 @@ public sealed class ElectionEntity
 {
     public int Id { get; set; }
     public string Name { get; set; } = null!;
+    public DateTime StartDate { get; set; }
+    public DateTime EndDate { get; set; }
 
     public ElectionTypeEntity Type { get; set; } = null!;
     public ElectionType TypeId { get; set; }

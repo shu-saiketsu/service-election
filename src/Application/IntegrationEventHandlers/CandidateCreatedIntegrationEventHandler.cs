@@ -1,28 +1,21 @@
 ﻿using MediatR;
-using Saiketsu.Service.Election.Application.Common;
-using Saiketsu.Service.Election.Domain.Entities;
+using Saiketsu.Service.Election.Application.Candidates.Commands.CreateCandidate;
 using Saiketsu.Service.Election.Domain.IntegrationEvents;
 
 namespace Saiketsu.Service.Election.Application.IntegrationEventHandlers;
 
 public sealed class CandidateCreatedIntegrationEventHandler : IRequestHandler<CandidateCreatedIntegrationEvent>
 {
-    private readonly IApplicationDbContext _context;
+    private readonly IMediator _mediator;
 
-    public CandidateCreatedIntegrationEventHandler(IApplicationDbContext context)
+    public CandidateCreatedIntegrationEventHandler(IMediator mediator)
     {
-        _context = context;
+        _mediator = mediator;
     }
 
     public async Task Handle(CandidateCreatedIntegrationEvent request, CancellationToken cancellationToken)
     {
-        var candidate = new CandidateEntity
-        {
-            Id = request.Id,
-            Name = request.Name
-        };
-
-        await _context.Candidates.AddAsync(candidate, cancellationToken);
-        await _context.SaveChangesAsync(cancellationToken);
+        var command = new CreateCandidateCommand { Id = request.Id, Name = request.Name };
+        await _mediator.Send(command, cancellationToken);
     }
 }

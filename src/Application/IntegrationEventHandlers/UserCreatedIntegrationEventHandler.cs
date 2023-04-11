@@ -1,27 +1,22 @@
 ﻿using MediatR;
-using Saiketsu.Service.Election.Application.Common;
-using Saiketsu.Service.Election.Domain.Entities;
+using Saiketsu.Service.Election.Application.Users.Commands.CreateUser;
 using Saiketsu.Service.Election.Domain.IntegrationEvents;
 
 namespace Saiketsu.Service.Election.Application.IntegrationEventHandlers;
 
 public sealed class UserCreatedIntegrationEventHandler : IRequestHandler<UserCreatedIntegrationEvent>
 {
-    private readonly IApplicationDbContext _context;
+    private readonly IMediator _mediator;
 
-    public UserCreatedIntegrationEventHandler(IApplicationDbContext context)
+    public UserCreatedIntegrationEventHandler(IMediator mediator)
     {
-        _context = context;
+        _mediator = mediator;
     }
 
     public async Task Handle(UserCreatedIntegrationEvent request, CancellationToken cancellationToken)
     {
-        var user = new UserEntity
-        {
-            Id = request.Id
-        };
+        var command = new CreateUserCommand { UserId = request.Id };
 
-        await _context.Users.AddAsync(user, cancellationToken);
-        await _context.SaveChangesAsync(cancellationToken);
+        await _mediator.Send(command, cancellationToken);
     }
 }

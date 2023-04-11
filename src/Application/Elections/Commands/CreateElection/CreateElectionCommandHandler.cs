@@ -20,11 +20,16 @@ public sealed class CreateElectionCommandHandler : IRequestHandler<CreateElectio
     {
         await _validator.ValidateAndThrowAsync(request, cancellationToken);
 
+        request.EndDate = DateTime.SpecifyKind(request.EndDate, DateTimeKind.Utc);
+        request.StartDate = DateTime.SpecifyKind(request.StartDate, DateTimeKind.Utc);
+
         var election = new ElectionEntity
         {
             Name = request.Name,
             OwnerId = request.OwnerId,
-            TypeId = request.Type
+            TypeId = request.Type,
+            StartDate = request.StartDate,
+            EndDate = request.EndDate
         };
 
         // save data to database
