@@ -2,7 +2,7 @@
 using Saiketsu.Service.Election.Application.Users.Commands.CreateUser;
 using Saiketsu.Service.Election.Domain.IntegrationEvents.Users;
 
-namespace Saiketsu.Service.Election.Application.IntegrationEventHandlers;
+namespace Saiketsu.Service.Election.Application.IntegrationEventHandlers.Users;
 
 public sealed class UserCreatedIntegrationEventHandler : IRequestHandler<UserCreatedIntegrationEvent>
 {

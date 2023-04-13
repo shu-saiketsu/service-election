@@ -12,7 +12,7 @@ using Saiketsu.Service.Election.Infrastructure.Persistence;
 namespace Saiketsu.Service.Election.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230408193122_SampleMigration")]
+    [Migration("20230412123016_SampleMigration")]
     partial class SampleMigration
     {
         /// <inheritdoc />

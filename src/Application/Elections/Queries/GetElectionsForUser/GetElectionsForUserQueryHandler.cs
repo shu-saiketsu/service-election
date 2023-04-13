@@ -51,9 +51,12 @@ public sealed class GetElectionsForUserQueryHandler : IRequestHandler<GetElectio
     private async Task<List<ElectionEntity>?> GetEligibleUserElections(string userId,
         CancellationToken cancellationToken)
     {
+        var dateTimeNow = DateTime.UtcNow;
+
         var elections = await _context.ElectionUsers
             .Where(x => x.UserId == userId && x.Voted == false)
             .Select(x => x.Election)
+            .Where(x => dateTimeNow > x.StartDate  && dateTimeNow < x.EndDate )
             .ToListAsync(cancellationToken);
 
         return elections;

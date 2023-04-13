@@ -2,7 +2,7 @@
 using Saiketsu.Service.Election.Application.Candidates.Commands.DeleteCandidate;
 using Saiketsu.Service.Election.Domain.IntegrationEvents.Candidates;
 
-namespace Saiketsu.Service.Election.Application.IntegrationEventHandlers;
+namespace Saiketsu.Service.Election.Application.IntegrationEventHandlers.Candidates;
 
 public sealed class CandidateDeletedIntegrationEventHandler : IRequestHandler<CandidateDeletedIntegrationEvent>
 {

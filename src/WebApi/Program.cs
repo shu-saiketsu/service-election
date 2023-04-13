@@ -5,6 +5,7 @@ using Saiketsu.Service.Election.Application;
 using Saiketsu.Service.Election.Application.Common;
 using Saiketsu.Service.Election.Domain.IntegrationEvents.Candidates;
 using Saiketsu.Service.Election.Domain.IntegrationEvents.Users;
+using Saiketsu.Service.Election.Domain.IntegrationEvents.Votes;
 using Saiketsu.Service.Election.Domain.Options;
 using Saiketsu.Service.Election.Infrastructure;
 using Saiketsu.Service.Election.Infrastructure.Persistence;
@@ -104,6 +105,8 @@ static void SubscribeEventBus(IHost app)
 
     eventBus.Subscribe<CandidateCreatedIntegrationEvent>();
     eventBus.Subscribe<CandidateDeletedIntegrationEvent>();
+
+    eventBus.Subscribe<VoteCastIntegrationEvent>();
 }
 
 try

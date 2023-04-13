@@ -2,7 +2,7 @@
 using Saiketsu.Service.Election.Application.Users.Commands.DeleteUser;
 using Saiketsu.Service.Election.Domain.IntegrationEvents.Users;
 
-namespace Saiketsu.Service.Election.Application.IntegrationEventHandlers;
+namespace Saiketsu.Service.Election.Application.IntegrationEventHandlers.Users;
 
 public sealed class UserDeletedIntegrationEventHandler : IRequestHandler<UserDeletedIntegrationEvent>
 {
